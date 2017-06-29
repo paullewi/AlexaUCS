@@ -12,14 +12,9 @@ exports.handler = function (event, context) {
     try {
         console.log("event.session.application.applicationId=" + event.session.application.applicationId);
 
-        /**
-         * Uncomment this if statement and populate with your skill's application ID to
-         * prevent someone else from configuring a skill that sends requests to this function.
-         */
-		 
-//     if (event.session.application.applicationId !== "amzn1.echo-sdk-ams.app.05aecccb3-1461-48fb-a008-822ddrt6b516") {
-//         context.fail("Invalid Application ID");
-//      }
+     if (event.session.application.applicationId !== "amzn1.ask.skill.c5a872fa-f46a-42c7-b80e-a72d67aa1770") {
+       context.fail("Invalid Application ID");
+     }
 
         if (event.session.new) {
             onSessionStarted({requestId: event.request.requestId}, event.session);
@@ -46,6 +41,8 @@ exports.handler = function (event, context) {
     }
 };
 
+
+
 /**
  * Called when the session starts.
  */
@@ -55,6 +52,9 @@ function onSessionStarted(sessionStartedRequest, session) {
 
     // add any session init logic here
 }
+
+
+
 
 /**
  * Called when the user invokes the skill without specifying what they want.
@@ -69,6 +69,10 @@ function onLaunch(launchRequest, session, callback) {
         buildSpeechletResponse(cardTitle, speechOutput, "", true));
 }
 
+
+
+
+
 /**
  * Called when the user specifies an intent for this skill.
  */
@@ -80,13 +84,18 @@ function onIntent(intentRequest, session, callback) {
         intentName = intentRequest.intent.name;
 
     // dispatch custom intents to handlers here
-    if (intentName == 'TestIntent') {
-        handleTestRequest(intent, session, callback);
+    if (intentName == 'song') {
+        handleSongRequest(intent, session, callback);
+    }
+    if (intentName == 'band') {
+        handleBandRequest(intent, session, callback);
     }
     else {
         throw "Invalid intent";
     }
 }
+
+
 
 /**
  * Called when the user ends the session.
@@ -99,7 +108,11 @@ function onSessionEnded(sessionEndedRequest, session) {
     // Add any cleanup logic here
 }
 
-function handleTestRequest(intent, session, callback) {
+function handleSongRequest(intent, session, callback) {
+    callback(session.attributes,
+        buildSpeechletResponseWithoutCard("Thong Song!", "", "true"));
+
+function handleBandRequest(intent, session, callback) {
     callback(session.attributes,
         buildSpeechletResponseWithoutCard("John Mayer!", "", "true"));
 }
